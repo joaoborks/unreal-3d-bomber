@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Runtime/Engine/Classes/Components/BoxComponent.h"
+#include "Runtime/Engine/Classes/Materials/MaterialInstanceDynamic.h"
 #include "Bomb.generated.h"
 
 UCLASS()
@@ -16,12 +17,16 @@ public:
 	// Sets default values for this actor's properties
 	ABomb();
 
+	UFUNCTION(BlueprintCallable)
+	void Detonate();
+
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (ClampMin = "2.0", ClampMax = "10.0"))
 	float BlastRange = 3.f;
 
-	UFUNCTION(BlueprintCallable)
-	void Detonate();
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UMaterialInstanceDynamic* DynamicMaterial;
+
 	virtual void BeginPlay() override;
 
 private:
