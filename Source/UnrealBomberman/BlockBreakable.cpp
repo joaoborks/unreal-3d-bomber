@@ -7,3 +7,8 @@ ABlockBreakable::ABlockBreakable()
 {
 	PrimaryActorTick.bCanEverTick = false;
 }
+
+void ABlockBreakable::OnBombBlastHit_Implementation()
+{
+	Destroy();
+}

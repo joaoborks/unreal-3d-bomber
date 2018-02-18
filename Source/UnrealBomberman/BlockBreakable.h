@@ -4,13 +4,20 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "BombDestroyable.h"
 #include "BlockBreakable.generated.h"
 
 UCLASS()
-class UNREALBOMBERMAN_API ABlockBreakable : public AActor
+class UNREALBOMBERMAN_API ABlockBreakable : public AActor, public IBombDestroyable
 {
 	GENERATED_BODY()
 	
 public:	
-	ABlockBreakable();	
+	ABlockBreakable();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Bomb Blast")
+	// Event called by the bomb when it blows and hits an object
+	void OnBombBlastHit();
+	// Event called by the bomb when it blows and hits an object
+	virtual void OnBombBlastHit_Implementation() override;
 };
