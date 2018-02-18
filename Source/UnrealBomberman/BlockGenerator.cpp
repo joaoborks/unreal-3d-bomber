@@ -1,6 +1,8 @@
 // Created by Joao Borks [joao.borks@gmail.com] 2018
 
 #include "BlockGenerator.h"
+#include "BlockBreakable.h"
+#include "Runtime/Core/Public/Math/UnrealMathUtility.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Engine/World.h"
 #include "Color.h"
@@ -13,6 +15,8 @@ ABlockGenerator::ABlockGenerator()
 void ABlockGenerator::BeginPlay()
 {
 	Super::BeginPlay();
+	ShowDebugPoints = false;
+	SpawnBlocks();
 }
 
 void ABlockGenerator::Tick(float DeltaSeconds)
@@ -23,11 +27,10 @@ void ABlockGenerator::Tick(float DeltaSeconds)
 	{
 		DrawDebugPoint(InitSpawnPoint, InvalidColor);
 		DrawDebugPoint(FinalSpawnPoint, InvalidColor);
-		for (auto& Container : SpawnPoints)
-			for (auto& Point : Container.PositionRow)
-				DrawDebugPoint(Point, ValidColor);				
-		for (auto& IgnorePoint : IgnoredPoints)
-			DrawDebugPoint(IgnorePoint, InvalidColor);
+		for (auto& Point : SpawnPoints)
+			DrawDebugPoint(Point, ValidColor);				
+		for (auto& Point : IgnoredPoints)
+			DrawDebugPoint(Point, InvalidColor);
 	}
 }
 
@@ -42,6 +45,7 @@ void ABlockGenerator::DrawDebugPoint(FVector &Center, const FLinearColor &Color)
 	UKismetSystemLibrary::DrawDebugPoint(GetWorld(), Center, 20.f, Color);
 }
 
+// Calculates the possible spawn points on the level
 void ABlockGenerator::CalculatePoints()
 {
 	if (FVector::Distance(InitSpawnPoint, FinalSpawnPoint) == 0)
@@ -50,20 +54,15 @@ void ABlockGenerator::CalculatePoints()
 		return;
 	}
 	if (SpawnPoints.Num() > 0)
-	{
-		for (auto& container : SpawnPoints)
-			container.PositionRow.Empty();
 		SpawnPoints.Empty();
-	}
+
 	// Temporarily predefined
 	float Scale = 100.f;
 	int SizeX = (FMath::Abs(InitSpawnPoint.X) + FMath::Abs(FinalSpawnPoint.X) + Scale) / Scale;
 	int SizeY = (FMath::Abs(InitSpawnPoint.Y) + FMath::Abs(FinalSpawnPoint.Y) + Scale) / Scale;
-	FVectorContainer* Temp = nullptr;
 	FVector* TempPosition;
 	for (int y = 0; y < SizeY; y++)
 	{
-		Temp = new FVectorContainer();
 		for (int x = 0; x < SizeX; x++)
 		{
 			// Row/Column Restrictions
@@ -72,18 +71,31 @@ void ABlockGenerator::CalculatePoints()
 				TempPosition = new FVector(InitSpawnPoint.X - x * Scale, InitSpawnPoint.Y + y * Scale, InitSpawnPoint.Z);
 				// Position Restrictions
 				if (AllowedSpawnPosition(*TempPosition))
-					Temp->PositionRow.Add(*TempPosition);
+					SpawnPoints.Emplace(*TempPosition);
 			}
 		}
-		SpawnPoints.Emplace(*Temp);
 	}
 }
 
+// Spawns the blocks at the free spaces
 void ABlockGenerator::SpawnBlocks()
 {
-	UE_LOG(LogTemp, Display, TEXT("Should spawn %d blocks"), GetValidPositionsCount());
+	if (!BlockBreakableBP)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Block Blueprint was not assigned!"));
+		return;
+	}
+	int BlocksToSpawn = GetValidPositionsCount() * BlockIntensity;
+	int Index;
+	for (int i = 0; i < BlocksToSpawn; i++)
+	{
+		Index = FMath::RandRange(0, SpawnPoints.Num() - 1);
+		GetWorld()->SpawnActor<ABlockBreakable>(BlockBreakableBP, SpawnPoints[Index], FRotator::ZeroRotator);
+		SpawnPoints.RemoveAt(Index);
+	}
 }
 
+// Returns whether the given position is valid
 bool ABlockGenerator::AllowedSpawnPosition(FVector Position)
 {
 	// Restrict Init and Final Points
@@ -101,10 +113,8 @@ bool ABlockGenerator::ShouldTickIfViewportsOnly() const
 	return WITH_EDITOR;
 }
 
+// Gets the total number of valid positions
 int ABlockGenerator::GetValidPositionsCount()
 {
-	int Temp = 0;
-	for (auto& Container : SpawnPoints)
-		Temp += Container.PositionRow.Num();
-	return Temp;
+	return SpawnPoints.Num();
 }

@@ -13,8 +13,8 @@ Project Features
 * Game HUD and UI
 
 ### Bonus:
+* Procedural Map
 * Adjustable Camera [Not included]
-* Procedural Maps [Not included]
 * AI Enemies [Not included]
 
 ### Future Plans:
