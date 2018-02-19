@@ -6,6 +6,16 @@
 #include "Runtime/Engine/Classes/Components/InputComponent.h"
 #include "PlayerChar.h"
 
+ABomberPlayerController::ABomberPlayerController()
+{
+	bAutoManageActiveCameraTarget = false;
+}
+
+void ABomberPlayerController::Reset()
+{
+	Destroy();
+}
+
 void ABomberPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();

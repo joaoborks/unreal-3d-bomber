@@ -11,7 +11,11 @@ class UNREALBOMBERMAN_API ABomberPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 	
+public:
+	ABomberPlayerController();
+
 protected:
+	virtual void Reset() override;
 	virtual void SetupInputComponent() override;
 	
 	void MoveHorizontal(float AxisValue);

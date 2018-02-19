@@ -34,12 +34,6 @@ void ABlockGenerator::Tick(float DeltaSeconds)
 	}
 }
 
-void ABlockGenerator::PostEditChangeProperty(FPropertyChangedEvent &PropertyChangedEvent)
-{
-	CalculatePoints();
-	Super::PostEditChangeProperty(PropertyChangedEvent);
-}
-
 void ABlockGenerator::DrawDebugPoint(FVector &Center, const FLinearColor &Color)
 {
 	UKismetSystemLibrary::DrawDebugPoint(GetWorld(), Center, 20.f, Color);
@@ -87,11 +81,13 @@ void ABlockGenerator::SpawnBlocks()
 	}
 	int BlocksToSpawn = GetValidPositionsCount() * BlockIntensity;
 	int Index;
+	TArray<FVector> Targets;
+	Targets.Append(SpawnPoints);
 	for (int i = 0; i < BlocksToSpawn; i++)
 	{
-		Index = FMath::RandRange(0, SpawnPoints.Num() - 1);
-		GetWorld()->SpawnActor<ABlockBreakable>(BlockBreakableBP, SpawnPoints[Index], FRotator::ZeroRotator);
-		SpawnPoints.RemoveAt(Index);
+		Index = FMath::RandRange(0, Targets.Num() - 1);
+		GetWorld()->SpawnActor<ABlockBreakable>(BlockBreakableBP, Targets[Index], FRotator::ZeroRotator);
+		Targets.RemoveAt(Index);
 	}
 }
 

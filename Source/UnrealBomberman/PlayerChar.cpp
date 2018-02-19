@@ -30,6 +30,11 @@ void APlayerChar::SpawnBomb()
 	Bomb->BlastRange = BombRange;
 }
 
+void APlayerChar::OnBombBlastHit_Implementation()
+{
+
+}
+
 FTransform& APlayerChar::GetSnappedPosition(FTransform Source) const
 {
 	FVector Location = Source.GetLocation();
