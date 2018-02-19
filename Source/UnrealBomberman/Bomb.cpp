@@ -7,6 +7,7 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "BombDestroyable.h"
 #include "BlastFx.h"
+#include "PlayerChar.h"
 
 // Sets default values
 ABomb::ABomb()
@@ -30,6 +31,9 @@ void ABomb::OnOverlapEnd(UPrimitiveComponent * OverlappedComp, AActor * OtherAct
 
 void ABomb::Detonate()
 {
+	APlayerChar* Player = Cast<APlayerChar>(GetOwner());
+	if (Player)
+		Player->PlacedBombs.Remove(this);
 	// Must destroy before traces otherwise will create infinite loop
 	Destroy();
 	SpawnBlast(GetActorRightVector());
@@ -39,7 +43,8 @@ void ABomb::Detonate()
 void ABomb::SpawnBlast(FVector Direction)
 {
 	ABlastFx* Blast = GetWorld()->SpawnActor<ABlastFx>(BlastFxBP, GetCenterLocation(), FRotator::ZeroRotator);
-	Blast->SetupBlast(LineTraceDirection(Direction), LineTraceDirection(-Direction));
+	if (Blast)
+		Blast->SetupBlast(LineTraceDirection(Direction), LineTraceDirection(-Direction));
 }
 
 FVector ABomb::LineTraceDirection(FVector Direction) const

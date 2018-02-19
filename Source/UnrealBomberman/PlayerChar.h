@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Bomb.h"
 #include "PlayerChar.generated.h"
 
 UCLASS()
@@ -12,8 +13,10 @@ class UNREALBOMBERMAN_API APlayerChar : public ACharacter
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this character's properties
 	APlayerChar();
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	TArray<ABomb*> PlacedBombs;
 
 protected:
 	UFUNCTION(BlueprintCallable)

@@ -18,7 +18,10 @@ public:
 	// Sets default values for this actor's properties
 	ABomb();
 
-	UFUNCTION(BlueprintCallable)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = "1.0", ClampMax = "10.0"))
+	float BlastRange = 1.f;
+
+	UFUNCTION(BlueprintCallable, Category = "Bomb Blast")
 	void Detonate();
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Bomb Blast")
@@ -28,10 +31,8 @@ public:
 	virtual void OnBombBlastHit_Implementation() override;
 
 protected:
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UClass* BlastFxBP;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (ClampMin = "1.0", ClampMax = "10.0"))
-	float BlastRange = 1.f;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	UMaterialInstanceDynamic* DynamicMaterial;
