@@ -6,6 +6,7 @@
 #include "Runtime/Engine/Classes/Engine/World.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "BombDestroyable.h"
+#include "BlastFx.h"
 
 // Sets default values
 ABomb::ABomb()
@@ -31,13 +32,17 @@ void ABomb::Detonate()
 {
 	// Must destroy before traces otherwise will create infinite loop
 	Destroy();
-	LineTraceDirection(GetActorRightVector());
-	LineTraceDirection(GetActorForwardVector());
-	LineTraceDirection(- GetActorRightVector());
-	LineTraceDirection(- GetActorForwardVector());
+	SpawnBlast(GetActorRightVector());
+	SpawnBlast(GetActorForwardVector());
 }
 
-void ABomb::LineTraceDirection(FVector Direction)
+void ABomb::SpawnBlast(FVector Direction)
+{
+	ABlastFx* Blast = GetWorld()->SpawnActor<ABlastFx>(BlastFxBP, GetCenterLocation(), FRotator::ZeroRotator);
+	Blast->SetupBlast(LineTraceDirection(Direction), LineTraceDirection(-Direction));
+}
+
+FVector ABomb::LineTraceDirection(FVector Direction) const
 {
 	FHitResult ObstacleHit;
 	TArray<FHitResult> Hits;
@@ -58,7 +63,8 @@ void ABomb::LineTraceDirection(FVector Direction)
 				Destroyable->Execute_OnBombBlastHit(Hit.GetActor());
 		}
 	}
-	UKismetSystemLibrary::DrawDebugLine(GetWorld(), Origin, Target, FLinearColor(.8f, 0.f, 0.f), 3, 20);
+	//UKismetSystemLibrary::DrawDebugLine(GetWorld(), Origin, Target, FLinearColor(.8f, 0.f, 0.f), 3, 20);
+	return Target;
 }
 
 void ABomb::OnBombBlastHit_Implementation() 

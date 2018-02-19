@@ -28,6 +28,8 @@ public:
 	virtual void OnBombBlastHit_Implementation() override;
 
 protected:
+	UPROPERTY(EditAnywhere)
+	UClass* BlastFxBP;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (ClampMin = "1.0", ClampMax = "10.0"))
 	float BlastRange = 1.f;
 
@@ -42,6 +44,7 @@ private:
 	UFUNCTION()
 	void OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
-	void LineTraceDirection(FVector Direction);
+	void SpawnBlast(FVector Direction);
+	FVector LineTraceDirection(FVector Direction) const;
 	FVector GetCenterLocation() const;
 };
