@@ -17,8 +17,20 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	TArray<ABomb*> PlacedBombs;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = "1.0", ClampMax = "10.0"))
+	int BombLimit = 1;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = "1.0", ClampMax = "10.0"))
+	float BombRange = 1;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool HasRemote = false;
+
+	UFUNCTION(BlueprintCallable)
+	void SpawnBomb();
 
 protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UClass* BombBP;
+
 	UFUNCTION(BlueprintCallable)
 	FTransform& GetSnappedPosition(FTransform Source) const;
 
