@@ -21,5 +21,20 @@ Project Features
 * Support for controllers and 4P Local Multiplayer
 * More maps with new mechanics
 * Starting Menu UI
+* Object Pooling
+* Better Blast VFX
+* Pickup Adjustable Drop Chances
 
-*Total Hours spent: <to be filled>*
+### Controls:
+
+#### Blue Player:
+* Movement: W/A/S/D
+* Plant Bomb: Spacebar
+* Detonate Remote Bomb: R
+
+#### Red Player:
+* Movement: Up/Left/Down/Right Arrow Keys
+* Plant Bomb: Enter
+* Detonate Remote Bomb: Right Ctrl
+
+*Total Hours spent: 16h32m*
