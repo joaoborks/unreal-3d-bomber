@@ -3,6 +3,8 @@ Unreal Bomberman
 
 *An Unreal Game Demo that uses Bomberman-like mechanics*
 
+[DOWNLOAD HERE](https://github.com/JoaoBorks/unreal-3d-bomber/releases/download/v1.0.0/UnrealBomberman_Build.zip)
+
 Project Features
 ---
 * Top Down Camera view
